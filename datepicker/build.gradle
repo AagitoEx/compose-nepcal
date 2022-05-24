@@ -3,6 +3,16 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+ext {
+    // Provide your own coordinates here
+    PUBLISH_GROUP_ID = 'io.github.aagitoex'
+    PUBLISH_VERSION = '0.0.1-alpha01'
+    PUBLISH_ARTIFACT_ID = 'compose-nepcal'
+}
+
+apply from: "${rootProject.projectDir}/datepicker/scripts/publish-module.gradle"
+
+
 android {
     compileSdk 31
 
