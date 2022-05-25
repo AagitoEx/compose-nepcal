@@ -37,6 +37,9 @@ data class NepDate(
 
     val dayOfWeek = adEquivalent.dayOfWeek.value
 
+    /**
+    * Weekday ex: Sunday, Monday
+    * */
     val weekDay by lazy {
         if (locale.language == Locale("ne").language) {
             weekDayMap[dayOfWeek]?.first

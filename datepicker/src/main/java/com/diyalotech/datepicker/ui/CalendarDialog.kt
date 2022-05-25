@@ -25,14 +25,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
-import com.diyalotech.bussewasdk.datepicker.R
 import com.diyalotech.datepicker.calendar.YEAR_RANGE
 import com.diyalotech.datepicker.date.NepDate
 import com.diyalotech.datepicker.date.fromADToBS
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.flow.collect
+import io.github.aagitoex.nepcal.R
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 
