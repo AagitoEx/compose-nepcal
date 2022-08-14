@@ -2,8 +2,12 @@
 > Current version 0.0.1-alpha01
 
 This is a android compose ui library to nepali (BS) calendar date picker.
+#### Requirements
+1. Compose 1.1.1 (kotlin 1.6.10)
+2. Compose Material 1.1.1
+3. Java8 Date Time Api's (available through coreLibraryDesugaring)
 
-#### Step 1: Enable `coreLibraryDesugaring`(can be skipped)
+#### Step 1: Enable `coreLibraryDesugaring`
 
 Before getting started, make sure `coreLibraryDesugaring` is enabled as this library depends on `java8 LocalDateTime`. Learn
 more about desugaring at [developer.android.com](https://developer.android.com/studio/write/java8-support).
