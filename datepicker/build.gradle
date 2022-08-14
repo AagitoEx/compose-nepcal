@@ -6,7 +6,7 @@ plugins {
 ext {
     // Provide your own coordinates here
     PUBLISH_GROUP_ID = 'io.github.aagitoex'
-    PUBLISH_VERSION = '0.0.1-alpha01'
+    PUBLISH_VERSION = '0.0.2-alpha01'
     PUBLISH_ARTIFACT_ID = 'compose-nepcal'
 }
 
@@ -56,14 +56,13 @@ android {
     }
 }
 
-def compose_calendar = "1.1.1"
+def compose_calendar = "1.2.0"
 
 dependencies {
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation "androidx.compose.ui:ui:$compose_calendar"
     implementation "androidx.compose.material:material:$compose_calendar"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_calendar"
@@ -72,7 +71,7 @@ dependencies {
 
     //material icons
     implementation "androidx.compose.material:material-icons-extended:$compose_calendar"
-    implementation "com.google.accompanist:accompanist-pager:0.23.1"
+    implementation "com.google.accompanist:accompanist-pager:0.25.0"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

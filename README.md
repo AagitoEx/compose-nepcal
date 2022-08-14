@@ -24,11 +24,15 @@ dependencies {
     //...
 }
 ```
-#### Step 2: Add dependency
+#### Step 2: Add dependency compose 1.1.1
 Please also note the library leverages `Compose MaterialTheme` for styling. To get started include
 following maven dependency in your app gradle file.
 ```groovy
 implementation 'io.github.aagitoex:compose-nepcal:0.0.1-alpha01'
+```
+### Step 2: Add dependency compose 1.2.0+
+```groovy
+implementation 'io.github.aagitoex:compose-nepcal:0.0.2-alpha01'
 ```
 
 #### Step 3: Display date picker dialog

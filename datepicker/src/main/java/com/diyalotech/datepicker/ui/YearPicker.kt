@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -35,11 +37,11 @@ internal fun YearPicker(
     pagerState: PagerState,
     onDismissYearPicker: () -> Unit
 ) {
-    val gridState = rememberLazyListState((viewDate.year - YEAR_RANGE.first) / 3)
+    val gridState = rememberLazyGridState((viewDate.year - YEAR_RANGE.first) / 3)
     val coroutineScope = rememberCoroutineScope()
 
     LazyVerticalGrid(
-        cells = GridCells.Fixed(3),
+        columns = GridCells.Fixed(3),
         state = gridState
     ) {
         itemsIndexed(YEAR_RANGE.toList()) { _, item ->

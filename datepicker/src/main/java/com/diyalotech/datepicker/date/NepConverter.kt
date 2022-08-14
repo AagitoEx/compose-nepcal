@@ -47,7 +47,7 @@ fun fromBSToAD(date: NepDate): LocalDate {
 }
 
 private fun nepDateFromDayElapsed(daysElapsed: Long): NepDate? {
-    var elapsed = daysElapsed.toInt()
+    var elapsed = daysElapsed
 
     for (i in bsLBoundY..bsUBoundY) {
 
@@ -65,7 +65,7 @@ private fun nepDateFromDayElapsed(daysElapsed: Long): NepDate? {
                 continue
             }
 
-            return NepDate(i, j + 1, elapsed + 1)
+            return NepDate(i, j + 1, (elapsed + 1).toInt())
         }
     }
     return null
