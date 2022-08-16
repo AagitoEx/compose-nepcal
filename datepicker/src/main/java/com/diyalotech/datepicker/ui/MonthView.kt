@@ -31,13 +31,13 @@ import com.diyalotech.datepicker.date.weekDayMap
 import com.diyalotech.datepicker.date.weekDayShortHeader
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun MonthView(
     viewDate: NepDate,
     selectedDate: NepDate,
     minDate: NepDate,
     maxDate: NepDate,
+    today: NepDate = NepDate.now(),
     onDateSelected: (NepDate) -> Unit
 ) {
     Column(
@@ -47,25 +47,32 @@ internal fun MonthView(
     ) {
 
         val calendarDatesData = remember { getDates(viewDate) }
-        val datesList = remember { IntRange(1, calendarDatesData.second).toList() }
+        val dayList = remember { IntRange(1, calendarDatesData.second) }
         val possibleSelected = remember(selectedDate) {
             viewDate.year == selectedDate.year && viewDate.month == selectedDate.month
         }
 
         LazyVerticalGrid(columns = GridCells.Fixed(7)) {
             for (x in 1 until calendarDatesData.first) {
-                item { Box(Modifier.size(40.dp)) }
+                //empty views
+                item(contentType = 1) { Box(Modifier.size(40.dp)) }
             }
 
-            items(datesList) {
-                val isSelected = remember(selectedDate) {
-                    possibleSelected && it == selectedDate.day
-                }
-                val isToday = viewDate.withDayOfMonth(it) == NepDate.now()
-                val date = viewDate withDayOfMonth it
-                val enabled = date in minDate..maxDate
-                DateSelectionBox(it, isSelected, isToday, enabled) {
-                    onDateSelected(date)
+            dayList.forEach { day ->
+                item(contentType = 2) {
+                    val isSelected = remember(selectedDate, possibleSelected) {
+                        possibleSelected && day == selectedDate.day
+                    }
+                    val isToday = remember(today) {
+                        possibleSelected && day == today.day
+                    }
+
+                    val date = viewDate withDayOfMonth day
+                    val enabled = date in minDate..maxDate
+
+                    DateSelectionBox(day, isSelected, isToday, enabled) {
+                        onDateSelected(date)
+                    }
                 }
             }
         }
@@ -123,7 +130,6 @@ private fun DateSelectionBox(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun DayOfWeekHeader() {
     val locale = LocalConfiguration.current.locale

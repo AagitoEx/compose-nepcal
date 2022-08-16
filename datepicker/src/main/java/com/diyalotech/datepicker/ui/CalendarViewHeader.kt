@@ -4,11 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
@@ -17,8 +15,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
@@ -39,8 +37,8 @@ internal fun CalendarViewHeader(
 ) {
     viewDate.locale = LocalConfiguration.current.locale
     val coroutineScope = rememberCoroutineScope()
-    val yearDropdownIcon = remember(yearPickerShowing) {
-        if (yearPickerShowing) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown
+    val dropDownRotation = remember(yearPickerShowing) {
+        if (yearPickerShowing) 180f else 0f
     }
 
     Box(
@@ -65,9 +63,11 @@ internal fun CalendarViewHeader(
             )
             Spacer(Modifier.width(4.dp))
             Icon(
-                yearDropdownIcon,
+                Icons.Default.ArrowDropDown,
                 contentDescription = "Year Selector",
                 modifier = Modifier.size(24.dp)
+                    .rotate(dropDownRotation),
+
             )
         }
 

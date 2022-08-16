@@ -26,6 +26,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import com.diyalotech.datepicker.calendar.YEAR_RANGE
+import com.diyalotech.datepicker.date.Constants.adLBoundD
+import com.diyalotech.datepicker.date.Constants.adLBoundM
+import com.diyalotech.datepicker.date.Constants.adLBoundY
+import com.diyalotech.datepicker.date.Constants.adUBoundD
+import com.diyalotech.datepicker.date.Constants.adUBoundM
+import com.diyalotech.datepicker.date.Constants.adUBoundY
 import com.diyalotech.datepicker.date.NepDate
 import com.diyalotech.datepicker.date.fromADToBS
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -46,7 +52,7 @@ import java.time.LocalDate
  * @param onDateChange - lambda to return selected date.
  * */
 @OptIn(
-    ExperimentalFoundationApi::class, ExperimentalPagerApi::class,
+    ExperimentalPagerApi::class,
     ExperimentalComposeUiApi::class
 )
 @Composable
@@ -56,8 +62,8 @@ fun CalendarDialog(
     dialogProperties: DialogProperties = DialogProperties(
         usePlatformDefaultWidth = false
     ),
-    minDate: LocalDate = NepDate.MIN.adEquivalent,
-    maxDate: LocalDate = NepDate.MAX.adEquivalent,
+    minDate: LocalDate = LocalDate.of(adLBoundY, adLBoundM, adLBoundD),
+    maxDate: LocalDate = LocalDate.of(adUBoundY, adUBoundM, adUBoundD),
     onDismissRequest: () -> Unit,
     onDateChange: (LocalDate) -> Unit
 ) {
@@ -82,7 +88,7 @@ fun CalendarDialog(
                     if (selectedDate in minDate..maxDate) {
                         fromADToBS(selectedDate)
                     } else {
-                        fromADToBS(minDate)
+                        NepDate.MIN
                     }
                 )
             }
@@ -90,7 +96,7 @@ fun CalendarDialog(
             val pagerState = rememberPagerState(
                 initialPage = (internalSelection.year - YEAR_RANGE.first) * 12 + (internalSelection.month - 1)
             )
-            var currentDate by remember { mutableStateOf(NepDate.now()) }
+            var currentDate by remember { mutableStateOf(internalSelection) }
 
             LaunchedEffect(pagerState) {
                 // Collect from the pager state a snapshotFlow reading the currentPage
@@ -127,8 +133,7 @@ fun CalendarDialog(
                     DayOfWeekHeader()
                     HorizontalPager(
                         count = (YEAR_RANGE.count()) * 12,
-                        state = pagerState,
-                        verticalAlignment = Alignment.Top
+                        state = pagerState
                     ) { page ->
                         val viewDate = remember {
                             NepDate(
