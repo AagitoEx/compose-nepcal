@@ -26,18 +26,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import com.diyalotech.datepicker.calendar.YEAR_RANGE
-import com.diyalotech.datepicker.date.Constants.adLBoundD
-import com.diyalotech.datepicker.date.Constants.adLBoundM
-import com.diyalotech.datepicker.date.Constants.adLBoundY
-import com.diyalotech.datepicker.date.Constants.adUBoundD
-import com.diyalotech.datepicker.date.Constants.adUBoundM
-import com.diyalotech.datepicker.date.Constants.adUBoundY
-import com.diyalotech.datepicker.date.NepDate
-import com.diyalotech.datepicker.date.fromADToBS
+import com.diyalotech.datepicker.monthName
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import io.github.aagitoex.nepcal.R
+import io.github.aagitoex.nepdate.Converter.fromADToBS
+import io.github.aagitoex.nepdate.NepDate
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 
@@ -62,8 +57,8 @@ fun CalendarDialog(
     dialogProperties: DialogProperties = DialogProperties(
         usePlatformDefaultWidth = false
     ),
-    minDate: LocalDate = LocalDate.of(adLBoundY, adLBoundM, adLBoundD),
-    maxDate: LocalDate = LocalDate.of(adUBoundY, adUBoundM, adUBoundD),
+    minDate: LocalDate = NepDate.MIN.ad,
+    maxDate: LocalDate = NepDate.MAX.ad,
     onDismissRequest: () -> Unit,
     onDateChange: (LocalDate) -> Unit
 ) {
@@ -166,7 +161,7 @@ fun CalendarDialog(
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 TextButton(onClick = {
-                    onDateChange(internalSelection.adEquivalent)
+                    onDateChange(internalSelection.ad)
                     onDismissRequest()
                 }) {
                     Text(text = stringResource(id = R.string.ok))
@@ -195,9 +190,10 @@ private fun CalendarHeader(title: String, selectedDate: NepDate) {
                     .fillMaxWidth()
                     .paddingFromBaseline(top = 0.dp)
             ) {
-                selectedDate.locale = LocalConfiguration.current.locale
+                val locale = LocalConfiguration.current.locale
+
                 Text(
-                    text = "${selectedDate.monthName} ${selectedDate.day}, ${selectedDate.year}",
+                    text = "${selectedDate.monthName(locale)} ${selectedDate.day}, ${selectedDate.year}",
                     modifier = Modifier.align(Alignment.CenterStart),
                     style = TextStyle(fontSize = 30.sp, fontWeight = W400)
                 )

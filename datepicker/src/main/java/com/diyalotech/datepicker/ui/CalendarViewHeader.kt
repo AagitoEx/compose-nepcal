@@ -21,9 +21,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.diyalotech.datepicker.date.NepDate
+import com.diyalotech.datepicker.monthName
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import io.github.aagitoex.nepdate.NepDate
 import kotlinx.coroutines.launch
 
 
@@ -35,7 +36,7 @@ internal fun CalendarViewHeader(
     pagerState: PagerState,
     onDismissYearPicker: () -> Unit
 ) {
-    viewDate.locale = LocalConfiguration.current.locale
+    val locale = LocalConfiguration.current.locale
     val coroutineScope = rememberCoroutineScope()
     val dropDownRotation = remember(yearPickerShowing) {
         if (yearPickerShowing) 180f else 0f
@@ -55,7 +56,7 @@ internal fun CalendarViewHeader(
                 .padding(vertical = 8.dp)
         ) {
             Text(
-                "${viewDate.monthName} ${viewDate.year}",
+                "${viewDate.monthName(locale)} ${viewDate.year}",
                 modifier = Modifier
                     .paddingFromBaseline(top = 16.dp)
                     .padding(start = 2.dp),

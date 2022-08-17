@@ -1,12 +1,14 @@
 package com.diyalotech.datepicker.calendar
 
-import com.diyalotech.datepicker.date.Constants
-import com.diyalotech.datepicker.date.NepDate
+import com.diyalotech.datepicker.ktx.dayOfWeek
+import com.diyalotech.datepicker.ktx.withDayOfMonth
+import io.github.aagitoex.nepdate.NepDate
 
-internal val YEAR_RANGE = Constants.bsLBoundY..Constants.bsUBoundY
+
+internal val YEAR_RANGE = NepDate.MIN.year..NepDate.MAX.year
 
 internal fun getDates(date: NepDate): Pair<Int, Int> {
-    val numDays = Constants.bsDaysInMonthByYear[date.year]?.get(date.month - 1)!!
+    val numDays = NepDate.getDaysInMonth(date.year, date.month - 1)
 
     var firstDay = (date withDayOfMonth 1).dayOfWeek
 

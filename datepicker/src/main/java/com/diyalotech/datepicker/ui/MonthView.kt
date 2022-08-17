@@ -23,12 +23,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.diyalotech.datepicker.calendar.getDates
-import com.diyalotech.datepicker.date.NepDate
-import com.diyalotech.datepicker.date.weekDayMap
-import com.diyalotech.datepicker.date.weekDayShortHeader
+import com.diyalotech.datepicker.ktx.withDayOfMonth
+import com.diyalotech.datepicker.weekDayShortHeader
+import io.github.aagitoex.nepdate.NepDate
 
 
 @Composable
