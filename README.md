@@ -36,7 +36,7 @@ implementation 'io.github.aagitoex:compose-nepcal:0.0.1-alpha01'
 ```
 ### Step 2: Add dependency compose 1.2.0+
 ```groovy
-implementation 'io.github.aagitoex:compose-nepcal:0.0.2-alpha01'
+implementation 'io.github.aagitoex:compose-nepcal:1.0.0-beta01'
 ```
 
 #### Step 3: Display date picker dialog
