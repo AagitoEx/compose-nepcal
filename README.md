@@ -1,5 +1,5 @@
 ## compose-nepcal (Nepali date picker and converter for compose)
-> Current version 0.0.1-alpha01
+Current version *1.0.0-beta01*
 
 This is a android compose ui library to nepali (BS) calendar date picker.
 #### Requirements
