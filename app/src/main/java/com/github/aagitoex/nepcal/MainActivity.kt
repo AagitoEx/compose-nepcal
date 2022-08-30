@@ -10,9 +10,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.tooling.preview.Preview
-import com.diyalotech.datepicker.date.NepDate
 import com.diyalotech.datepicker.ui.CalendarDialog
 import com.github.aagitoex.nepcal.ui.theme.NepCalTheme
 import java.time.LocalDate
@@ -37,6 +34,8 @@ class MainActivity : ComponentActivity() {
                     if (showDateDialog) {
                         CalendarDialog(
                             selectedDate = LocalDate.now()!!,
+                            minDate = LocalDate.now().minusMonths(1),
+                            maxDate = LocalDate.now().plusDays(5),
                             onDismissRequest = {
                                 showDateDialog = false
                             },

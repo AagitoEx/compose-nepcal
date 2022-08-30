@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -22,6 +23,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.diyalotech.datepicker.calendar.getDates
@@ -36,40 +38,40 @@ internal fun MonthView(
     selectedDate: NepDate,
     minDate: NepDate,
     maxDate: NepDate,
-    today: NepDate = NepDate.now(),
     onDateSelected: (NepDate) -> Unit
 ) {
     Column(
         Modifier
             .padding(start = 12.dp, end = 12.dp)
-            .testTag("dialog_date_calendar")
     ) {
 
         val calendarDatesData = remember { getDates(viewDate) }
-        val dayList = remember { IntRange(1, calendarDatesData.second) }
-        val possibleSelected = remember(selectedDate) {
-            viewDate.year == selectedDate.year && viewDate.month == selectedDate.month
+        val today = remember { NepDate.now() }
+        val selectedMonth =
+            remember(selectedDate) { // this is the month where the date selection is
+                viewDate.year == selectedDate.year && viewDate.month == selectedDate.month
+            }
+        val todayMonth = remember {
+            viewDate.year == today.year && viewDate.month == today.month
         }
 
-        LazyVerticalGrid(columns = GridCells.Fixed(7)) {
+        LazyVerticalGrid(columns = GridCells.Fixed(7), userScrollEnabled = false) {
             for (x in 1 until calendarDatesData.first) {
                 //empty views
-                item(contentType = 1) { Box(Modifier.size(40.dp)) }
+                item(contentType = 1) { Box(Modifier.size(44.dp)) }
             }
 
-            dayList.forEach { day ->
+            (1..calendarDatesData.second).forEach { day ->
                 item(contentType = 2) {
-                    val isSelected = remember(selectedDate, possibleSelected) {
-                        possibleSelected && day == selectedDate.day
-                    }
-                    val isToday = remember(today) {
-                        possibleSelected && day == today.day
-                    }
-
                     val date = viewDate withDayOfMonth day
                     val enabled = date in minDate..maxDate
 
-                    DateSelectionBox(day, isSelected, isToday, enabled) {
+                    DateSelectionBox(
+                        day,
+                        selectedMonth && day == selectedDate.day,
+                        todayMonth && day == today.day,
+                        enabled
+                    ) {
                         onDateSelected(date)
                     }
                 }
@@ -87,75 +89,86 @@ private fun DateSelectionBox(
     enabled: Boolean,
     onClick: () -> Unit
 ) {
-    Box(contentAlignment = Alignment.Center) {
-        Box(
-            Modifier
+    if (selected) {
+        Text(
+            date.toString(),
+            modifier = Modifier
+                .size(44.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colors.primary)
+                .wrapContentSize(Alignment.Center),
+            style = TextStyle(
+                fontSize = 12.sp
+            ),
+            color = MaterialTheme.colors.onPrimary
+        )
+    } else if (today) {
+        Text(
+            date.toString(),
+            modifier = Modifier
+                .size(44.dp)
+                .clip(CircleShape)
+
+                .clickable(enabled) {
+                    onClick()
+                }
+                .background(MaterialTheme.colors.primary.copy(0.2f))
+
+                .wrapContentSize(Alignment.Center),
+            style = TextStyle(
+                fontSize = 12.sp
+            ),
+            color = MaterialTheme.colors.primary
+        )
+    } else {
+        Text(
+            date.toString(),
+            modifier = Modifier
+                .size(44.dp)
                 .clip(CircleShape)
                 .clickable(enabled) {
                     onClick()
                 }
-                .background(
-                    when {
-                        selected -> MaterialTheme.colors.primary
-                        today -> MaterialTheme.colors.primary.copy(0.2f)
-                        else -> MaterialTheme.colors.surface
-                    }
-                )
-                .size(40.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                date.toString(),
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .wrapContentSize(Alignment.Center),
-                style = TextStyle(
-                    fontSize = 12.sp
-                ),
-                color = when {
-                    selected -> MaterialTheme.colors.onPrimary
-                    today -> MaterialTheme.colors.primary
-                    else -> {
-                        if (enabled) {
-                            MaterialTheme.colors.onSurface
-                        } else {
-                            MaterialTheme.colors.onSurface.copy(ContentAlpha.disabled)
-                        }
-                    }
-                }
-            )
-        }
+                .wrapContentSize(Alignment.Center),
+            style = TextStyle(
+                fontSize = 12.sp
+            ),
+            color = if (enabled) {
+                MaterialTheme.colors.onSurface
+            } else {
+                MaterialTheme.colors.onSurface.copy(ContentAlpha.disabled)
+            }
+        )
     }
 }
 
 @Composable
 internal fun DayOfWeekHeader() {
     val locale = LocalConfiguration.current.locale
-    Row(
-        modifier = Modifier
-            .height(40.dp)
-            .padding(start = 12.dp, end = 12.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(7),
+        modifier = Modifier.padding(horizontal = 12.dp),
+        userScrollEnabled = false
     ) {
-        LazyVerticalGrid(columns = GridCells.Fixed(7)) {
-
-            weekDayShortHeader(locale).forEach { weekDay ->
-                item {
-                    Box(Modifier.size(40.dp)) {
-                        Text(
-                            weekDay,
-                            modifier = Modifier
-                                .alpha(0.8f)
-                                .fillMaxSize()
-                                .wrapContentSize(Alignment.Center),
-                            style = TextStyle(fontSize = 14.sp, fontWeight = W600),
-                        )
-                    }
-                }
+        weekDayShortHeader(locale).forEach { weekDay ->
+            item {
+                Text(
+                    weekDay,
+                    modifier = Modifier
+                        .alpha(0.8f)
+                        .size(40.dp)
+                        .wrapContentSize(Alignment.Center),
+                    style = TextStyle(fontSize = 14.sp, fontWeight = W600),
+                )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun DayOfWeek_PREV() {
+    Surface {
+        DayOfWeekHeader()
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -19,6 +20,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.diyalotech.datepicker.monthName
@@ -28,16 +30,14 @@ import io.github.aagitoex.nepdate.NepDate
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 internal fun CalendarViewHeader(
     viewDate: NepDate,
     yearPickerShowing: Boolean,
-    pagerState: PagerState,
-    onDismissYearPicker: () -> Unit
+    onClickNav: (left: Boolean) -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     val locale = LocalConfiguration.current.locale
-    val coroutineScope = rememberCoroutineScope()
     val dropDownRotation = remember(yearPickerShowing) {
         if (yearPickerShowing) 180f else 0f
     }
@@ -47,49 +47,44 @@ internal fun CalendarViewHeader(
             .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
             .fillMaxWidth()
     ) {
-        Row(
-            Modifier
-                .clip(CircleShape)
-                .align(Alignment.CenterStart)
-                .clickable(onClick = onDismissYearPicker)
-                .padding(start = 6.dp, end = 4.dp)
-                .padding(vertical = 8.dp)
-        ) {
-            Text(
-                "${viewDate.monthName(locale)} ${viewDate.year}",
-                modifier = Modifier
-                    .paddingFromBaseline(top = 16.dp)
-                    .padding(start = 2.dp),
-                style = TextStyle(fontSize = 14.sp, fontWeight = W600)
-            )
-            Spacer(Modifier.width(4.dp))
-            Icon(
-                Icons.Default.ArrowDropDown,
-                contentDescription = "Year Selector",
-                modifier = Modifier.size(24.dp)
-                    .rotate(dropDownRotation),
 
-            )
-        }
+        Row() {
+            Row(
+                Modifier
+                    .clip(CircleShape)
+                    .clickable(onClick = onDismissRequest)
+                    .padding(start = 6.dp, end = 4.dp)
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "${viewDate.monthName(locale)} ${viewDate.year}",
+                    modifier = Modifier
+                        .padding(start = 2.dp),
+                    style = TextStyle(fontSize = 14.sp, fontWeight = W600)
+                )
+                Spacer(Modifier.width(4.dp))
+                Icon(
+                    Icons.Default.ArrowDropDown,
+                    contentDescription = "Year Selector",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .rotate(dropDownRotation)
+                )
+            }
 
-        Row(
-            Modifier
-                .align(Alignment.CenterEnd)
-        ) {
+            Spacer(modifier = Modifier.weight(1f))
+
             Icon(
                 Icons.Default.KeyboardArrowLeft,
                 contentDescription = "Previous Month",
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(40.dp)
-                    .clickable(
-                        onClick = {
-                            coroutineScope.launch {
-                                if (pagerState.currentPage - 1 >= 0)
-                                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                            }
-                        }
-                    )
+                    .clickable {
+                        onClickNav(true)
+                    }
+
                     .padding(8.dp),
             )
 
@@ -102,16 +97,19 @@ internal fun CalendarViewHeader(
                     .clip(CircleShape)
                     .size(40.dp)
                     .size(24.dp)
-                    .clickable(
-                        onClick = {
-                            coroutineScope.launch {
-                                if (pagerState.currentPage + 1 < pagerState.pageCount)
-                                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                            }
-                        }
-                    )
+                    .clickable {
+                        onClickNav(false)
+                    }
                     .padding(8.dp),
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun CalendarViewHeader_prev() {
+    Surface {
+        CalendarViewHeader(NepDate.now(), false, {}, {})
     }
 }

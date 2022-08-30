@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
-import com.diyalotech.datepicker.calendar.YEAR_RANGE
 import com.diyalotech.datepicker.monthName
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -34,6 +33,7 @@ import io.github.aagitoex.nepcal.R
 import io.github.aagitoex.nepdate.Converter.fromADToBS
 import io.github.aagitoex.nepdate.NepDate
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 /**
@@ -47,16 +47,13 @@ import java.time.LocalDate
  * @param onDateChange - lambda to return selected date.
  * */
 @OptIn(
-    ExperimentalPagerApi::class,
-    ExperimentalComposeUiApi::class
+    ExperimentalPagerApi::class, ExperimentalComposeUiApi::class,
 )
 @Composable
 fun CalendarDialog(
     selectedDate: LocalDate,
     title: String = "Select date",
-    dialogProperties: DialogProperties = DialogProperties(
-        usePlatformDefaultWidth = false
-    ),
+    dialogProperties: DialogProperties = DialogProperties(usePlatformDefaultWidth = false),
     minDate: LocalDate = NepDate.MIN.ad,
     maxDate: LocalDate = NepDate.MAX.ad,
     onDismissRequest: () -> Unit,
@@ -65,39 +62,55 @@ fun CalendarDialog(
     var yearPickerShowing by remember {
         mutableStateOf(false)
     }
+    val minNepDate by remember {
+        mutableStateOf(fromADToBS(minDate))
+    }
+    val maxNepDate by remember {
+        mutableStateOf(fromADToBS(maxDate))
+    }
+    val todayNep by remember {
+        mutableStateOf(NepDate.now())
+    }
+
+    val yearRange by remember {
+        println("range ${minNepDate.year..maxNepDate.year}")
+        mutableStateOf(minNepDate.year..maxNepDate.year)
+    }
+    val coroutineScope = rememberCoroutineScope()
 
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = dialogProperties
     ) {
+        var internalSelection by remember {
+            mutableStateOf(
+                if (selectedDate in minDate..maxDate) {
+                    fromADToBS(selectedDate)
+                } else {
+                    minNepDate
+                }
+            )
+        }
+
         Column(
             Modifier
-                .padding(32.dp)
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .padding(horizontal = 32.dp)
                 .clip(MaterialTheme.shapes.large)
                 .background(MaterialTheme.colors.surface)
         ) {
-            var internalSelection by remember {
-                mutableStateOf(
-                    if (selectedDate in minDate..maxDate) {
-                        fromADToBS(selectedDate)
-                    } else {
-                        NepDate.MIN
-                    }
-                )
-            }
 
             val pagerState = rememberPagerState(
-                initialPage = (internalSelection.year - YEAR_RANGE.first) * 12 + (internalSelection.month - 1)
+                initialPage = (todayNep.year - yearRange.first) * 12 + (todayNep.month - 1)
             )
-            var currentDate by remember { mutableStateOf(internalSelection) }
+            var currentPage by remember { mutableStateOf(todayNep) }
 
             LaunchedEffect(pagerState) {
                 // Collect from the pager state a snapshotFlow reading the currentPage
                 snapshotFlow { pagerState.currentPage }.collectLatest { page ->
-                    currentDate = NepDate(
-                        YEAR_RANGE.first + (page / 12),
+                    currentPage = NepDate(
+                        yearRange.first + (page / 12),
                         page % 12 + 1,
                         1
                     )
@@ -106,9 +119,23 @@ fun CalendarDialog(
 
             CalendarHeader(title, internalSelection)
 
-            CalendarViewHeader(currentDate, yearPickerShowing, pagerState) {
-                yearPickerShowing = !yearPickerShowing
-            }
+            CalendarViewHeader(
+                currentPage,
+                yearPickerShowing,
+                onClickNav = { left ->
+                    coroutineScope.launch {
+                        if (left) {
+                            if (pagerState.currentPage > 0)
+                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                        } else {
+                            if (pagerState.currentPage < pagerState.pageCount)
+                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
+                    }
+                }, onDismissRequest = {
+                    yearPickerShowing = !yearPickerShowing
+                }
+            )
 
             Box(modifier = Modifier.weight(1f, false)) {
                 androidx.compose.animation.AnimatedVisibility(
@@ -120,29 +147,24 @@ fun CalendarDialog(
                     enter = slideInVertically(initialOffsetY = { -it }),
                     exit = slideOutVertically(targetOffsetY = { -it })
                 ) {
-                    YearPicker(currentDate, pagerState) {
+                    YearPicker(currentPage.year, pagerState, yearRange) {
                         yearPickerShowing = false
                     }
                 }
                 Column {
                     DayOfWeekHeader()
                     HorizontalPager(
-                        count = (YEAR_RANGE.count()) * 12,
+                        count = (yearRange.count()) * 12,
                         state = pagerState
                     ) { page ->
-                        val viewDate = remember {
-                            NepDate(
-                                YEAR_RANGE.first + (page / 12),
-                                page % 12 + 1,
-                                1
-                            )
+                        val pageDate = remember {
+                            NepDate(yearRange.first + (page / 12), page % 12 + 1, 1)
                         }
-
                         MonthView(
-                            viewDate,
+                            pageDate,
                             internalSelection,
-                            fromADToBS(minDate),
-                            fromADToBS(maxDate)
+                            minNepDate,
+                            maxNepDate
                         ) {
                             internalSelection = it
                         }
