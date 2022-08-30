@@ -1,5 +1,5 @@
 ## compose-nepcal (Nepali date picker and converter for compose)
-Current version *1.0.0-beta01*
+Current version **1.0.0-beta01**
 
 This is a android compose ui library to nepali (BS) calendar date picker.
 #### Requirements
@@ -57,35 +57,7 @@ Surface() {
     }
 }
 ```
-The library includes custom `NepDate()` data class to represent BS dates. It has many helper functions
-that can help you to manipulate BS dates.
-```kotlin
-data class NepDate(
-    val year: Int,
-    val month: Int,
-    val day: Int,
-)
 
-//initialize with now()
-val nepDateNow = NepDate.now()
+This project uses [nepdate](https://github.com/AagitoEx/nepdate) java lib and so all **date conversion**
+functions are **available** for you to use. Head over to the link for the date converter API docs.
 
-//initialize with default constructor
-val nepDate = NepDate(2078, 1, 23)
-
-//get AD date from nepDate
-val ad = nepDate.adEquivalent
-
-//max and MIN supported dates (*Supported BS dates range from 1975-2100)
-val min = NepDate.MIN
-val max = NepDate.MAX
-```
-
-#### Date converter functions
-The library also includes `BS -> AD` and `AD -> BS` date converter functions.
-```kotlin
-fun fromADToBS(date: LocalDate): NepDate
-fun fromBSToAD(date: NepDate): LocalDate
-```
-
-**Api docs**
-Work in progress will be available soon, contributions are welcomed.
