@@ -9,7 +9,7 @@ plugins {
 apply from: "${rootDir}/scripts/publish-root.gradle"
 
 ext {
-    compose_version="1.2.0"
+    compose_version="1.2.1"
 }
 
 task clean(type: Delete) {
