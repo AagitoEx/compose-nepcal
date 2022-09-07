@@ -27,15 +27,13 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     var showDateDialog by remember { mutableStateOf(false) }
-                    Text(text = "Hello world", Modifier.clickable {
+                    Text(text = "Click anywhere to open calender", Modifier.clickable {
                         showDateDialog = true
                     })
 
                     if (showDateDialog) {
                         CalendarDialog(
                             selectedDate = LocalDate.now()!!,
-                            minDate = LocalDate.now().minusMonths(1),
-                            maxDate = LocalDate.now().plusDays(5),
                             onDismissRequest = {
                                 showDateDialog = false
                             },
