@@ -6,7 +6,7 @@ plugins {
 ext {
     // Provide your own coordinates here
     PUBLISH_GROUP_ID = 'io.github.aagitoex'
-    PUBLISH_VERSION = '1.0.0-beta01'
+    PUBLISH_VERSION = '1.0.0-beta02'
     PUBLISH_ARTIFACT_ID = 'compose-nepcal'
 }
 

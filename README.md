@@ -1,12 +1,12 @@
 ## compose-nepcal (Nepali date picker and converter for compose)
 
-Current version **1.0.0-beta01**
+Current version **1.0.0-beta02**
 
-This is a android compose ui library to nepali (BS) calendar date picker.
+This is a android compose-ui date picker library for nepali (BS) calendar.
 
 #### Requirements
 
-1. Compose 1.1.1 (kotlin 1.6.10)
+1. Compose 1.2.0+ (kotlin 1.7.0+)
 2. Compose Material 1.1.1
 3. Java8 Date Time Api's (available through coreLibraryDesugaring)
 
@@ -17,13 +17,18 @@ more about desugaring at [developer.android.com](https://developer.android.com/s
 
 ```groovy
 compileOptions {  
-    coreLibraryDesugaringEnabled true    sourceCompatibility JavaVersion.VERSION_1_8    targetCompatibility JavaVersion.VERSION_1_8}  
+    coreLibraryDesugaringEnabled true
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}  
 
 kotlinOptions {  
-    jvmTarget = "1.8"}  
+    jvmTarget = "1.8"
+}  
 
 dependencies {  
-    //...    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'    //...}  
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+}  
 ```
 
 #### Step 2: Add dependency compose 1.1.1
@@ -35,10 +40,10 @@ following maven dependency in your app gradle file.
 implementation 'io.github.aagitoex:compose-nepcal:0.0.1-alpha01'  
 ```
 
-### Step 2: Add dependency compose 1.2.0+
+#### Step 2: Add dependency compose 1.2.0+
 
 ```groovy
-implementation 'io.github.aagitoex:compose-nepcal:1.0.0-beta01'  
+implementation 'io.github.aagitoex:compose-nepcal:1.0.0-beta02'  
 ```
 
 #### Step 3: Display date picker dialog
@@ -47,8 +52,19 @@ The library provides a date picker dialog api that is similar to `Dialog` in com
 
 ```kotlin
 Surface() {  
-    var showDateDialog by remember { mutableStateOf(false) }    if (showDateDialog) {        CalendarDialog(            selectedDate = LocalDate.now()!!,            onDismissRequest = {                showDateDialog = false            },            onDateChange = { localDate: LocalDate ->                            }  
-        )    }}  
+    var showDateDialog by remember {
+        mutableStateOf(false) 
+    }    
+    if (showDateDialog) {
+        CalendarDialog(
+            selectedDate = LocalDate.now()!!,
+            onDismissRequest = { showDateDialog = false },
+            onDateChange = {
+                    localDate: LocalDate ->
+            }  
+        )
+    }
+}  
 ```
 
 This project uses [nepdate](https://github.com/AagitoEx/nepdate) java lib and so all **date conversion**  
