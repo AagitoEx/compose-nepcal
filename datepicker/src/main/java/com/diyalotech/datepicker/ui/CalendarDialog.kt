@@ -1,7 +1,6 @@
 package com.diyalotech.datepicker.ui
 
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -53,7 +52,7 @@ import java.time.LocalDate
 fun CalendarDialog(
     selectedDate: LocalDate,
     title: String = "Select date",
-    dialogProperties: DialogProperties = DialogProperties(usePlatformDefaultWidth = false),
+    dialogProperties: DialogProperties = DialogProperties(),
     minDate: LocalDate = NepDate.MIN.ad,
     maxDate: LocalDate = NepDate.MAX.ad,
     onDismissRequest: () -> Unit,
@@ -96,7 +95,6 @@ fun CalendarDialog(
             Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(horizontal = 32.dp)
                 .clip(MaterialTheme.shapes.large)
                 .background(MaterialTheme.colors.surface)
         ) {
@@ -137,15 +135,14 @@ fun CalendarDialog(
                 }
             )
 
-            Box(modifier = Modifier.weight(1f, false)) {
+            Box {
                 androidx.compose.animation.AnimatedVisibility(
                     yearPickerShowing,
                     modifier = Modifier
                         .zIndex(0.7f)
-                        .background(MaterialTheme.colors.surface)
-                        .clipToBounds(),
-                    enter = slideInVertically(initialOffsetY = { -it }),
-                    exit = slideOutVertically(targetOffsetY = { -it })
+                        .background(MaterialTheme.colors.surface),
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
                 ) {
                     YearPicker(currentPage.year, pagerState, yearRange) {
                         yearPickerShowing = false
@@ -196,33 +193,26 @@ fun CalendarDialog(
 
 @Composable
 private fun CalendarHeader(title: String, selectedDate: NepDate) {
-    Box(
+
+    Column(
         Modifier
+            .padding(start = 24.dp, end = 24.dp)
             .fillMaxWidth()
     ) {
-        Column(Modifier.padding(start = 24.dp, end = 24.dp)) {
-            Text(
-                text = title,
-                modifier = Modifier.paddingFromBaseline(top = 24.dp),
-                style = TextStyle(fontSize = 12.sp)
-            )
+        Text(
+            text = title,
+            modifier = Modifier.paddingFromBaseline(top = 24.dp),
+            style = TextStyle(fontSize = 12.sp)
+        )
 
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .paddingFromBaseline(top = 0.dp)
-            ) {
-                val locale = LocalConfiguration.current.locale
+        val locale = LocalConfiguration.current.locale
 
-                Text(
-                    text = "${selectedDate.monthName(locale)} ${selectedDate.day}, ${selectedDate.year}",
-                    modifier = Modifier.align(Alignment.CenterStart),
-                    style = TextStyle(fontSize = 30.sp, fontWeight = W400)
-                )
-            }
-
-            Spacer(Modifier.height(8.dp))
-        }
+        Text(
+            text = "${selectedDate.monthName(locale)} ${selectedDate.day}, ${selectedDate.year}",
+            style = TextStyle(fontSize = 30.sp, fontWeight = W400),
+            modifier = Modifier.paddingFromBaseline(top = 0.dp)
+                .padding(bottom = 8.dp)
+        )
     }
 }
 

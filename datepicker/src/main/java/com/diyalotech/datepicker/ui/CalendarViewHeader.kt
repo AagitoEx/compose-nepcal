@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,11 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.diyalotech.datepicker.monthName
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import io.github.aagitoex.nepdate.NepDate
-import kotlinx.coroutines.launch
-
 
 @Composable
 internal fun CalendarViewHeader(
@@ -42,67 +37,64 @@ internal fun CalendarViewHeader(
         if (yearPickerShowing) 180f else 0f
     }
 
-    Box(
+    Row(
         Modifier
             .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
             .fillMaxWidth()
     ) {
-
-        Row() {
-            Row(
-                Modifier
-                    .clip(CircleShape)
-                    .clickable(onClick = onDismissRequest)
-                    .padding(start = 6.dp, end = 4.dp)
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "${viewDate.monthName(locale)} ${viewDate.year}",
-                    modifier = Modifier
-                        .padding(start = 2.dp),
-                    style = TextStyle(fontSize = 14.sp, fontWeight = W600)
-                )
-                Spacer(Modifier.width(4.dp))
-                Icon(
-                    Icons.Default.ArrowDropDown,
-                    contentDescription = "Year Selector",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .rotate(dropDownRotation)
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Icon(
-                Icons.Default.KeyboardArrowLeft,
-                contentDescription = "Previous Month",
+        Row(
+            Modifier
+                .clip(CircleShape)
+                .clickable(onClick = onDismissRequest)
+                .padding(start = 6.dp, end = 4.dp)
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                "${viewDate.monthName(locale)} ${viewDate.year}",
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .size(40.dp)
-                    .clickable {
-                        onClickNav(true)
-                    }
-
-                    .padding(8.dp),
+                    .padding(start = 2.dp),
+                style = TextStyle(fontSize = 14.sp, fontWeight = W600)
             )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
+            Spacer(Modifier.width(4.dp))
             Icon(
-                Icons.Default.KeyboardArrowRight,
-                contentDescription = "Next Month",
+                Icons.Default.ArrowDropDown,
+                contentDescription = "Year Selector",
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .size(40.dp)
                     .size(24.dp)
-                    .clickable {
-                        onClickNav(false)
-                    }
-                    .padding(8.dp),
+                    .rotate(dropDownRotation)
             )
         }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Icon(
+            Icons.Default.KeyboardArrowLeft,
+            contentDescription = "Previous Month",
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(40.dp)
+                .clickable {
+                    onClickNav(true)
+                }
+
+                .padding(8.dp),
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Icon(
+            Icons.Default.KeyboardArrowRight,
+            contentDescription = "Next Month",
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(40.dp)
+                .size(24.dp)
+                .clickable {
+                    onClickNav(false)
+                }
+                .padding(8.dp),
+        )
     }
 }
 

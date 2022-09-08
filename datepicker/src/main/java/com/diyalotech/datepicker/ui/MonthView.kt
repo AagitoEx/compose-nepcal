@@ -9,10 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,40 +37,38 @@ internal fun MonthView(
     maxDate: NepDate,
     onDateSelected: (NepDate) -> Unit
 ) {
-    Column(
-        Modifier
-            .padding(start = 12.dp, end = 12.dp)
-    ) {
+    val calendarDatesData = remember { getDates(viewDate) }
+    val today = remember { NepDate.now() }
+    val selectedMonth =
+        remember(selectedDate) { // this is the month where the date selection is
+            viewDate.year == selectedDate.year && viewDate.month == selectedDate.month
+        }
+    val todayMonth = remember {
+        viewDate.year == today.year && viewDate.month == today.month
+    }
 
-        val calendarDatesData = remember { getDates(viewDate) }
-        val today = remember { NepDate.now() }
-        val selectedMonth =
-            remember(selectedDate) { // this is the month where the date selection is
-                viewDate.year == selectedDate.year && viewDate.month == selectedDate.month
-            }
-        val todayMonth = remember {
-            viewDate.year == today.year && viewDate.month == today.month
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(7),
+        Modifier.padding(horizontal = 12.dp),
+        userScrollEnabled = false
+    ) {
+        for (x in 1 until calendarDatesData.first) {
+            //empty views
+            item(contentType = 1) { Box(Modifier.size(44.dp)) }
         }
 
-        LazyVerticalGrid(columns = GridCells.Fixed(7), userScrollEnabled = false) {
-            for (x in 1 until calendarDatesData.first) {
-                //empty views
-                item(contentType = 1) { Box(Modifier.size(44.dp)) }
-            }
+        (1..calendarDatesData.second).forEach { day ->
+            item(contentType = 2) {
+                val date = viewDate withDayOfMonth day
+                val enabled = date in minDate..maxDate
 
-            (1..calendarDatesData.second).forEach { day ->
-                item(contentType = 2) {
-                    val date = viewDate withDayOfMonth day
-                    val enabled = date in minDate..maxDate
-
-                    DateSelectionBox(
-                        day,
-                        selectedMonth && day == selectedDate.day,
-                        todayMonth && day == today.day,
-                        enabled
-                    ) {
-                        onDateSelected(date)
-                    }
+                DateSelectionBox(
+                    day,
+                    selectedMonth && day == selectedDate.day,
+                    todayMonth && day == today.day,
+                    enabled
+                ) {
+                    onDateSelected(date)
                 }
             }
         }
@@ -145,22 +140,18 @@ private fun DateSelectionBox(
 @Composable
 internal fun DayOfWeekHeader() {
     val locale = LocalConfiguration.current.locale
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(7),
-        modifier = Modifier.padding(horizontal = 12.dp),
-        userScrollEnabled = false
-    ) {
+
+    //todo: fix this
+    Row(Modifier.padding(horizontal = 12.dp)) {
         weekDayShortHeader(locale).forEach { weekDay ->
-            item {
-                Text(
-                    weekDay,
-                    modifier = Modifier
-                        .alpha(0.8f)
-                        .size(40.dp)
-                        .wrapContentSize(Alignment.Center),
-                    style = TextStyle(fontSize = 14.sp, fontWeight = W600),
-                )
-            }
+            Text(
+                weekDay,
+                modifier = Modifier
+                    .size(44.dp)
+                    .weight(1f)
+                    .wrapContentSize(Alignment.Center),
+                style = TextStyle(fontSize = 14.sp, fontWeight = W600),
+            )
         }
     }
 }

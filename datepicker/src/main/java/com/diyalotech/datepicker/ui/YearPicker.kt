@@ -4,15 +4,13 @@ import android.util.Range
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,22 +37,31 @@ internal fun YearPicker(
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         state = gridState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
 
-        items(yearRange.toList()) { item ->
-            val selected = remember { item == year }
+        yearRange.forEach { item ->
+            item {
+                val selected = remember { item == year }
 
-            YearPickerItem(year = item, selected = selected) {
-                if (!selected) {
-                    coroutineScope.launch {
-                        pagerState.scrollToPage(
-                            pagerState.currentPage + (item - year) * 12
-                        )
+                YearPickerItem(year = item, selected = selected) {
+                    if (!selected) {
+                        coroutineScope.launch {
+                            pagerState.scrollToPage(
+                                pagerState.currentPage + (item - year) * 12
+                            )
+                        }
                     }
+                    onDismissYearPicker()
                 }
-                onDismissYearPicker()
             }
+        }
+    }
+
+    SideEffect {
+        coroutineScope.launch {
+            gridState.scrollToItem(yearRange.indexOf(year))
         }
     }
 }
