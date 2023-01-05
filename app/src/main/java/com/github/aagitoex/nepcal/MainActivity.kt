@@ -6,11 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.metrics.performance.JankStats
 import com.diyalotech.datepicker.ui.CalendarDialog
 import com.github.aagitoex.nepcal.ui.theme.NepCalTheme
@@ -30,6 +34,7 @@ class MainActivity : ComponentActivity() {
         jankStats.isTrackingEnabled = false
     }
 
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // initialize JankStats for current window
@@ -51,6 +56,8 @@ class MainActivity : ComponentActivity() {
 
                         CalendarDialog(
                             selectedDate = LocalDate.now()!!,
+                            modifier = Modifier.padding(16.dp),
+                            dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
                             onDismissRequest = {
                                 showDateDialog = false
                             },

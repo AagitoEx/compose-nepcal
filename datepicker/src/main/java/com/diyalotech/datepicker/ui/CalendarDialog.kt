@@ -51,6 +51,7 @@ import java.time.LocalDate
 @Composable
 fun CalendarDialog(
     selectedDate: LocalDate,
+    modifier: Modifier = Modifier,
     title: String = "Select date",
     dialogProperties: DialogProperties = DialogProperties(),
     minDate: LocalDate = NepDate.MIN.ad,
@@ -92,9 +93,8 @@ fun CalendarDialog(
         }
 
         Column(
-            Modifier
+            modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
                 .clip(MaterialTheme.shapes.large)
                 .background(MaterialTheme.colors.surface)
         ) {
